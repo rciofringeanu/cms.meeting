@@ -1,0 +1,747 @@
+<?php
+/**
+ * @file
+ * Code for the Meetings feature.
+ */
+module_load_include('inc', 'meeting', 'meeting.features');
+module_load_include('cron', 'meeting', 'meeting');
+module_load_include('inc', 'meeting', 'meeting.api');
+module_load_include('php', 'cms', 'utils');
+
+define('ROLE_MANAGE_MEETINGS', 'manage meeting');
+
+define('VOC_MEETING_KIND', 'meeting_kind');
+define('VOC_MEETING_TYPE', 'meeting_type');
+define('VOC_MEETING_STATUS', 'meeting_status');
+
+/**
+ * Implements hook_menu();
+*/
+function meeting_menu() {
+    $items['meeting/%node/manage_documents'] = array(
+        'title' => 'Manage documents',
+        'page callback' => 'meeting_manage_documents',
+        'page arguments' => array(1),
+        'access callback' => 'node_access',
+        'access arguments' => array('update', 1),
+        'weight' => 0,
+        'type' => MENU_LOCAL_TASK,
+        'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    );
+
+    $items['meeting/%node/delete_documents'] = array(
+        'page callback' => 'meeting_delete_documents',
+        'page arguments' => array(1),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+    $items['meeting/%node/add_documents'] = array(
+        'page callback' => 'meeting_add_documents',
+        'page arguments' => array(1),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+    $items['api/meeting/list/%'] = array(
+        'title' => 'Meeting API (List meetings)',
+        'page callback' => 'api_meeting_list',
+        'page arguments' => array(3),
+        'access arguments' => array('access content'),
+        'file' => 'meeting.api.inc',
+        'type' => MENU_CALLBACK,
+    );
+
+    $items['meeting/list/%'] = array(
+        'page callback' => 'meeting_list_from_cache',
+        'page arguments' => array(2),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+        'file' => 'meeting.api.inc',
+    );
+
+    return $items;
+}
+
+
+/**
+ * Implementes hook_theme($existing, $type, $theme, $path)
+ */
+function meeting_theme($existing, $type, $theme, $path) {
+    $base = array(
+        'file' => 'theme.inc',
+        'path' => $path . '/theme',
+    );
+    return array(
+        'meeting_manage_documents_template' => array(
+            'template' => 'meeting/manage-documents',
+            'arguments' => array(),
+            'path' => drupal_get_path('theme', 'cms_theme') . '/templates/forms',
+        ),
+        'table__meetings_template_country' => $base + array(
+            'variables' => array(
+                'header' => NULL,
+                'rows' => NULL,
+                'attributes' => array(),
+                'caption' => NULL,
+                'colgroups' => array(),
+                'sticky' => TRUE,
+                'empty' => '',
+                'settings' => array()
+            )
+        ),
+        'table__meetings_template_instrument' => $base + array(
+            'variables' => array(
+                'header' => NULL,
+                'rows' => NULL,
+                'attributes' => array(),
+                'caption' => NULL,
+                'colgroups' => array(),
+                'sticky' => TRUE,
+                'empty' => '',
+                'settings' => array()
+            )
+        )
+    );
+}
+
+
+/**
+ * Callback function
+ *
+ * Delete selected documents for a specified meeting
+*/
+function meeting_delete_documents($node) {
+    $data = array('message' => t('No documents selected'));
+    if (!isset($_POST['documents'])) {
+        echo json_encode($data);
+        drupal_exit();
+    }else {
+        $existing_documents = CMSMeeting::get_documents($node);
+        if (is_array($existing_documents)) {
+            $existing_documents = array_keys($existing_documents);
+        }
+
+        $nids = explode(',', $_POST['documents']);
+        $total = 0;
+        foreach ($nids as $nid) {
+            $document = node_load($nid);
+            if ($document && in_array($nid, $existing_documents)) {
+                $element = array_search($nid, $existing_documents);
+                unset($existing_documents[$element]);
+                $total ++;
+            }
+        }
+
+        if (empty($existing_documents)) {
+            unset($node->field_meeting_document[$node->language]);
+        }else {
+            CMSBase::set_field_list_target_id($node, 'field_meeting_document', array('field_meeting_document' => $existing_documents), true);
+        }
+
+        node_save($node);
+        $data['message'] = $total . ' ' . t('documents deleted from meeting');
+    }
+
+    echo json_encode($data);
+    drupal_set_message($data['message']);
+    //drupal_exit();
+}
+
+/**
+ * Callback function
+ *
+ * Add selected documents for a specified meeting
+*/
+function meeting_add_documents($node) {
+    $data = array('message' => t('No documents selected'));
+    if (!isset($_POST['documents'])) {
+        echo json_encode($data);
+        drupal_exit();
+    }else {
+        $existing_documents = CMSMeeting::get_documents($node);
+        if (is_array($existing_documents)) {
+            $existing_documents = array_keys($existing_documents);
+        }
+
+        $nids = explode(',', $_POST['documents']);
+        $total = 0;
+        foreach ($nids as $nid) {
+            $document = node_load($nid);
+            if ($document) {
+                array_push($existing_documents, $nid);
+                $total ++;
+            }
+        }
+
+        CMSBase::set_field_list_target_id($node, 'field_meeting_document', array('field_meeting_document' => $existing_documents), true);
+        node_save($node);
+        $data['message'] = $total . ' ' . t('documents added to meeting');
+    }
+
+    echo json_encode($data);
+    drupal_set_message($data['message']);
+    //drupal_exit();
+}
+
+/**
+ * Theme meeting manage documents interface
+*/
+function meeting_manage_documents($node) {
+    global $user;
+
+    if ($node->type != 'meeting') {
+        drupal_not_found();
+        drupal_exit();
+    }
+
+    if (strlen($node->title) > 55) {
+        $page_title = CMSUtils::character_limiter($node->title, 55, '...');
+    }else {
+        $page_title = $node->title;
+    }
+    drupal_set_title($page_title, PASS_THROUGH);
+
+    $breadcrumb = array();
+    $breadcrumb[] = l(t('Home'), '<front>');
+    $breadcrumb[] = l(t('Meetings'), 'meeting/listing');
+    $breadcrumb[] = l($page_title, 'node/' . $node->nid);
+
+    drupal_set_breadcrumb($breadcrumb);
+
+    return theme('meeting_manage_documents_template', array('node' => $node));
+}
+
+function meeting_views_default_views_alter(&$views) {
+    if (isset($views['meetings'])) {
+        $handler = &$views['meetings'];
+        $roles = user_roles();
+        $rids = array();
+        foreach($roles as $rid => $role) {
+            if($role == 'authenticated user') {
+                $rids[$rid] = $rid;
+            }
+        }
+        $handler->display['default']->display_options['access']['type'] = 'role';
+        $handler->display['default']->display_options['access']['role'] = array_filter($rids);
+    }
+    return $views;
+}
+
+/**
+ * Implements hook_node_view();
+*/
+function meeting_node_view($node, $view_mode, $langcode) {
+    if(function_exists('cms_theme_node_access') && $node->type == CMSMeeting::$bundle) {
+        cms_theme_node_access($node);
+    }
+
+    if ($node->type == 'meeting') {
+        $node->participants = array();
+        if (isset($node->field_meeting_participants) && (!empty($node->field_meeting_participants))) {
+            $agent = CMSContacts::agent();
+            foreach ($node->field_meeting_participants[$node->language] as $expert) {
+                $contact = $agent->search_user($expert['value']);
+                $node->participants[] = $contact;
+            }
+        }
+
+        if ($view_mode == 'full' && node_is_page($node)) {
+            $breadcrumb = array();
+            $breadcrumb[] = l(t('Home'), '<front>');
+            $breadcrumb[] = l(t('Meetings'), 'meeting/listing');
+            drupal_set_breadcrumb($breadcrumb);
+        }
+    }
+}
+
+/**
+ * Implements hook_entity_view($entity, $type, $view_mode, $langcode)
+ */
+function meeting_entity_view($entity, $type, $view_mode, $langcode){
+    if($type != 'node' || $view_mode !== 'full') {
+        return;
+    }
+
+    $node = node_load($entity->nid);
+    if (node_is_page($node)) {
+        $fields = CMSMeeting::$related_fields;
+        foreach ($fields as $related_content => $field) {
+            if (!empty($node->{$field}) && isset($node->{$field}[$node->language])) {
+                $content = $entity->content[$field]['#items'];
+                $published_contents = CMSUtils::get_published_content($content);
+                $entity->content[$field]['#items'] = $published_contents;
+            }
+        }
+    }
+
+    // Inject the meetings into the country profile page
+    switch ($entity->type) {
+        case CMSMeeting::$bundle_country_module:
+            $node->content[CMSMeeting::$field_meetings_country] = _meetings_get_meetings_render($node, $view_mode, 'table__meetings_template_country', CMSMeeting::$field_meetings_country, CMSMeeting::$bundle_country_module, 'country');
+            break;
+        case CMSMeeting::$bundle_instrument_module:
+            $node->content[CMSMeeting::$field_meetings_instrument] = _meetings_get_meetings_render($node, $view_mode, 'table__meetings_template_instrument', CMSMeeting::$field_meetings_instrument, CMSMeeting::$bundle_instrument_module,'CMS Instrument');
+            break;
+    }
+}
+
+
+function _meetings_get_meetings_render($node, $view_mode, $theme, $field, $bundle, $type) {
+    $meetings = $node->meetings[$node->language];
+    $classes = array('table', 'table-striped', 'table-bordered');
+    if (count($meetings) > 10) {
+        $classes[] = 'dataTable';
+    }
+    $rows = array();
+    foreach($meetings as $meeting) {
+        $row = $meeting['entity'];
+        $node_url = node_uri($row);
+        $start_date = field_view_field('node', $row, 'field_meeting_start', array('label' => 'hidden'));
+        $instrument = CMSBase::get_field_single_target_id($row, 'field_meeting_instrument');
+        $instrument = node_load($instrument);
+
+        $rows[] = array(
+            'data' => array(
+                sprintf('<a href="/%s">%s</a>', $node_url['path'], $row->title),
+                $instrument->title,
+                drupal_render($start_date)
+            )
+        );
+    }
+    return array(
+        '#theme' => $theme,
+        '#weight' => 100, //@todo: computed
+        '#access' => TRUE, '#label_display' => 'hidden', '#view_mode' => $view_mode,
+        '#language' => $node->language,
+        '#field_name' => $field,
+        '#field_type' => 'entityreference',
+        '#entity_type' => 'node',
+        '#bundle' => $bundle,
+        '#items' => $meetings,
+        '#header' => array(t('Meeting title'), t('Instrument'), t('Start date')),
+        '#rows' => $rows,
+        '#attributes' => array('class' => $classes),
+        '#caption' => FALSE,
+        '#colgroups' => array(),
+        '#sticky' => TRUE,
+        '#empty' => t('There are no meetings for this ' . $type),
+        '#settings' => array()
+    ) + $meetings;
+}
+
+
+/**
+ * Implements hook_form_alter();
+*/
+function meeting_form_alter(&$form, &$form_state, $form_id) {
+    switch ($form_id) {
+        case 'meeting_node_form' :
+            $node =  $form['#node'];
+            $default_value = array();
+            if (property_exists($node, 'field_meeting_participants') && array_key_exists($node->language, $node->field_meeting_participants)) {
+                foreach ($node->field_meeting_participants[$node->language] as $index => $expert) {
+                    $default_value[] = $expert['value'];
+                }
+            }
+            $participants_options = CMSContacts::get_contacts();
+            asort($participants_options);
+
+            $form['field_meeting_participants'] = array(
+                '#type' => 'select',
+                '#title' => t('Participants'),
+                '#multiple' => TRUE,
+                '#options' => $participants_options,
+                '#default_value' => $default_value,
+            );
+            /**
+             * Callback function to manipulate field_species_experts data before DB insert
+            */
+            $form['#submit'][] = 'meeting_alter_participants_submit';
+
+            $breadcrumb = array();
+            $breadcrumb[] = l(t('Home'), '<front>');
+            $breadcrumb[] = l(t('Meetings'), 'meeting/listing');
+            if (isset($form['nid']) && (is_numeric($form['nid']['#value']))) {
+                $breadcrumb[] = l($form['#node']->title, 'node/' . $form['#node']->nid);
+            }
+
+            drupal_set_breadcrumb($breadcrumb);
+            break;
+
+        case 'views_exposed_form':
+            if (arg(0) == 'meeting') {
+                $path = drupal_get_path('theme', 'cms_theme');
+                drupal_add_js("$path/js/form.js");
+
+                $form['#tree'] = TRUE;
+
+                $instruments[''] = t('Any');
+                $instruments = $instruments + CMSLegalInstrument::get_mapped_instruments($title_as_key = FALSE);
+                $instruments_ids = array_keys($instruments);
+
+                if (isset($_GET['field_meeting_instrument_target_id']) && (in_array($_GET['field_meeting_instrument_target_id'], $instruments_ids))) {
+                    $instrument_selected = $_GET['field_meeting_instrument_target_id'];
+                } else {
+                    $instrument_selected = '';
+                }
+
+                $form['field_meeting_instrument_target_id'] = array(
+                    '#type' => 'select',
+                    '#prefix' => '<div id="dropdown-family-replace">',
+                    '#suffix' => '</div>',
+                    '#options' => $instruments,
+                    '#default_value' => $instrument_selected,
+                );
+
+                $breadcrumb = array();
+                $breadcrumb[] = l(t('Home'), '<front>');
+                drupal_set_breadcrumb($breadcrumb);
+            }
+            break;
+        case 'node_delete_confirm':
+            if ($form['#node']->type == 'meeting') {
+                $form['#submit'][] = '_meeting_redirect_after_delete';
+            }
+            break;
+    }
+
+    return $form;
+}
+
+function meeting_alter_participants_submit(&$form, &$form_state) {
+    $values = $form_state['values'];
+    $language = $values['language'];
+    if (array_key_exists('field_meeting_participants', $values)) {
+        if (!empty($values['field_meeting_participants'])) {
+            $participants = $values['field_meeting_participants'];
+            $count = 0;
+            foreach ($participants as $uid => $participant) {
+                $form_state['values']['field_meeting_participants'][$language][$count]['value'] = $uid;
+                $count += 1;
+            }
+        }else {
+            $form_state['values']['field_meeting_participants'][$language] = array();
+        }
+    }else {
+        $form_state['values']['field_meeting_participants'][$language] = array();
+    }
+}
+
+function _meeting_redirect_after_delete(&$form, &$form_state) {
+    $form_state['redirect'] = 'meeting/listing';
+}
+
+/**
+ * Implements hook_node_presave/
+ *
+ * Set content relation only if the save function is called within Meeting content type
+ *
+ * @param   stdClass   $node
+*/
+function meeting_node_presave($node) {
+    if ($node->type == 'meeting') {
+        if (property_exists($node, 'nid') && $node->nid && (!property_exists($node, 'content_relation') || $node->content_relation != FALSE)) {
+            CMSMeeting::update_content_relation($node, CMSMeeting::$related_fields, CMSMeeting::$bundle);
+        }
+    }
+}
+
+function meeting_node_insert($node) {
+    if ($node->type == 'meeting') {
+        CMSMeeting::update_content_relation($node, CMSMeeting::$related_fields, CMSMeeting::$bundle);
+    }
+}
+
+
+/**
+ * Implements hook_field_extra_fields()
+ *
+ * @return mixed Extra fields information
+ */
+function meeting_field_extra_fields() {
+    $extra['node'][CMSMeeting::$bundle_country_module]['display'] = array(
+        'meetings' => array(
+            'label' => t('Meetings'),
+            'description' => t('Injects into country content type the list of meetings for the country'),
+            'weight' => 100,
+        ),
+    );
+    $extra['node'][CMSMeeting::$bundle_instrument_module]['display'] = array(
+        'meetings' => array(
+            'label' => t('Meetings'),
+            'description' => t('Injects into CMS Instrument content type the list of meetings for the CMS Instrument'),
+            'weight' => 100,
+        ),
+    );
+    return $extra;
+}
+
+
+/**
+ * Implements hook_node_load()
+ *
+ * Attach $node->meetings to country nodes for rendering of related meetings
+ */
+function meeting_node_load($nodes, $types) {
+    foreach($nodes as $node) {
+        switch($node->type) {
+            case CMSMeeting::$bundle_country_module:
+                $meetings = CMSMeeting::get_meetings_for_country($node->nid);
+                $node->meetings[$node->language] = array();
+                foreach($meetings as $row) {
+                    $node->meetings[$node->language][] = array(
+                        'target_id' => $row->nid,
+                        'entity' => $row,
+                        'access' => TRUE
+                    );
+                }
+                break;
+            case CMSMeeting::$bundle_instrument_module:
+                $meetings = CMSMeeting::get_meetings_for_content_type($node->nid, 'field_meeting_instrument');
+                $node->meetings[$node->language] = array();
+                foreach($meetings as $row) {
+                    $node->meetings[$node->language][] = array(
+                        'target_id' => $row->nid,
+                        'entity' => $row,
+                        'access' => TRUE
+                    );
+                }
+            default: break;
+        }
+    }
+}
+
+
+class CMSMeeting extends CMSBase {
+
+    static $bundle = 'meeting';
+    static $bundle_country_module = 'country';
+    static $field_meetings_country = 'meetings';
+    static $bundle_instrument_module = 'legal_instrument';
+    static $field_meetings_instrument = 'meetings';
+
+    static $related_fields = array(
+        'species' => 'field_meeting_species',
+        'publication' => 'field_meeting_publication',
+        'document' => 'field_meeting_document'
+    );
+
+
+    /**
+     * Create a new CMS meeting node instance.
+     *
+     * @param bool $save If TRUE, object is saved into database
+     * @return stdClass The node object initialized
+     */
+    static function node_create($title, $save = TRUE, $uuid = NULL) {
+        return self::drupal_node_create($title, 'meeting', $save, $uuid);
+    }
+
+
+    static function get_uuid($node) {
+        return CMSUtils::get_node_uuid($node);
+    }
+
+    /**
+     * Get all documents nodes for a meeting
+     *
+     * @param   stdClass   $node
+     * @return  array
+    */
+    static function get_documents($node) {
+        $nids = CMSBase::get_field_list_target_id($node, 'field_meeting_document');
+        return node_load_multiple($nids);
+    }
+
+    public static function node_to_array($node, $export_base_dir) {
+        $ret = array(
+            'title' => $node->title,
+            'status' => $node->status,
+            'uuid' => CMSUtils::get_node_uuid($node)
+        );
+        self::get_field_single_value($node, 'field_meeting_abbreviation', $ret);
+        self::get_field_single_value($node, 'field_meeting_description', $ret);
+        self::get_field_single_value($node, 'field_meeting_start', $ret);
+        self::get_field_single_value($node, 'field_meeting_reg_deadline', $ret);
+        self::get_field_single_value($node, 'field_meeting_end', $ret);
+        $ret['field_meeting_instrument'] = self::get_field_instrument_name($node, 'field_meeting_instrument');
+        $ret['field_meeting_type'] = self::get_field_taxonomic_term_name($node, 'field_meeting_type', VOC_MEETING_TYPE);
+        $ret['field_meeting_kind'] = self::get_field_taxonomic_term_name($node, 'field_meeting_kind', VOC_MEETING_KIND);
+        $ret['field_meeting_status'] = self::get_field_taxonomic_term_name($node, 'field_meeting_status', VOC_MEETING_STATUS);
+        self::get_field_single_value($node, 'field_meeting_city', $ret);
+        self::get_field_single_value($node, 'field_meeting_location', $ret);
+        $ret['field_meeting_country'] = self::get_field_country_code($node, 'field_meeting_country');
+        $ret['field_meeting_image'] = self::export_field_files($node, 'field_meeting_image', $export_base_dir);
+        self::get_field_single_value($node, 'field_meeting_organizer', $ret);
+        self::get_field_single_value($node, 'field_meeting_coorganizer', $ret);
+        $ret['field_meeting_languages'] = self::get_field_taxonomic_term_name($node, 'field_meeting_languages', VOC_LANGUAGES);
+        self::get_field_single_value($node, 'field_meeting_end', $ret);
+        self::get_field_single_value($node, 'field_meeting_latitude', $ret);
+        self::get_field_single_value($node, 'field_meeting_longitude', $ret);
+        $ret['field_meeting_document'] = self::get_entity_reference_by_uuid($node, 'field_meeting_document');
+        self::get_field_list_value($node, 'field_meeting_participants', $ret);
+
+        foreach(self::$related_fields as $field_name) {
+            $ret[$field_name] = self::get_entity_reference_by_uuid($node, $field_name);
+        }
+
+        return $ret;
+    }
+
+
+    /**
+     * Create a new node, or update an existing node with data from an array
+     * @param $data
+     * @param string $files_path_prefix
+     * @param null $existing_node
+     * @return object Drupal node
+     */
+    static function node_from_array($data, $files_path_prefix = '', &$existing_node = NULL) {
+        $ret = NULL;
+        if(empty($data['title'])) {
+            CMSUtils::println('CMSMeeting::node_from_array(): Cannot import meeting without title, field_meeting_start or field_meeting_country');
+            return $ret;
+        }
+        if($existing_node === NULL) {
+            $node = self::node_create($data['title'], FALSE);
+            if(!empty($data['uuid'])) {
+                $node->uuid = $data['uuid'];
+            }
+        } else {
+            $node = $existing_node;
+        }
+
+        $node->title = $data['title'];
+        if (!empty($data['status'])) {
+            $node->status = $data['status'];
+        }
+        self::set_field_single_value($node, 'field_meeting_abbreviation', $data);
+        self::set_field_single_value($node, 'field_meeting_description', $data);
+        self::set_field_single_value($node, 'field_meeting_start', $data);
+        self::set_field_single_value($node, 'field_meeting_reg_deadline', $data);
+        self::set_field_single_value($node, 'field_meeting_end', $data);
+        self::set_field_instrument($node, 'field_meeting_instrument', $data);
+        self::set_field_taxonomic_term($node, 'field_meeting_type', VOC_MEETING_TYPE, $data);
+        self::set_field_taxonomic_term($node, 'field_meeting_kind', VOC_MEETING_KIND, $data);
+        self::set_field_taxonomic_term($node, 'field_meeting_status', VOC_MEETING_STATUS, $data);
+        self::set_field_single_value($node, 'field_meeting_city', $data);
+        self::set_field_single_value($node, 'field_meeting_location', $data);
+        self::set_field_country($node, 'field_meeting_country', $data);
+        self::set_field_single_value($node, 'field_meeting_organizer', $data);
+        self::set_field_single_value($node, 'field_meeting_coorganizer', $data);
+
+        if (array_key_exists('field_meeting_languages', $data)) {
+            if (is_array($data['field_meeting_languages'])) {
+                self::set_field_taxonomic_terms($node, 'field_meeting_languages', VOC_LANGUAGES, $data);
+            }else {
+                self::set_field_taxonomic_term($node, 'field_meeting_languages', VOC_LANGUAGES, $data);
+            }
+        }
+
+        self::set_field_single_value($node, 'field_meeting_latitude', $data);
+        self::set_field_single_value($node, 'field_meeting_longitude', $data);
+        self::set_field_list_value($node, 'field_meeting_participants', $data);
+
+        // Unlink previous documents, adds new documents and may leave orphaned documents (those that were removed)
+        self::set_entity_reference_by_uuid($node, 'field_meeting_document', $data);
+        // Duplicate images should be handled by Drupal using internal deduplication http://drupal.org/node/1409056
+        self::import_field_files($node, 'field_meeting_image', $data, self::$bundle, $files_path_prefix);
+
+        foreach(self::$related_fields as $field_name) {
+            self::set_entity_reference_by_uuid($node, $field_name, $data);
+        }
+
+        node_save($node);
+        return $node;
+    }
+
+    public static function map_remote_meetings($profile){
+        $ret = array();
+        $nodes = node_load_multiple(array(), array('type' => CMSMeeting::$bundle));
+        foreach($nodes as $node) {
+            $ret[$profile . ':' . $node->uuid] = $node->title . ' (' . strtoupper($profile) . ')';
+        }
+
+        return $ret;
+    }
+
+
+    /**
+     * Retrieve the meetings which have country (field_meeting_country) set to a specified country
+     * @param $id_country integer Country to filter by
+     * @return mixed Array of meeting nodes
+     */
+    public static function get_meetings_for_country($id_country) {
+        $ret = array();
+        if(!is_numeric($id_country)) {
+            watchdog('meeting', 'get_meetings_for_country - parameter is not an integer, returning empty result');
+            return $ret;
+        }
+        $query = new EntityFieldQuery();
+        $query = $query
+            ->entityCondition('entity_type', 'node')
+            ->propertyCondition('type', self::$bundle)
+            ->propertyCondition('status', NODE_PUBLISHED)
+            ->fieldCondition('field_meeting_country', 'target_id', $id_country, '=')
+            ->execute();
+        if(!empty($query['node'])) {
+            $ret = node_load_multiple(array_keys($query['node']));
+        }
+        return $ret;
+    }
+
+    public static function get_meetings_for_content_type($nid, $field) {
+        $ret = array();
+        if(!is_numeric($nid)) {
+            watchdog('meeting', 'get_meetings_for_content_type() - $nid is not an integer, returning empty result');
+            return $ret;
+        }
+        $query = new EntityFieldQuery();
+        $query = $query
+            ->entityCondition('entity_type', 'node')
+            ->propertyCondition('type', self::$bundle)
+            ->propertyCondition('status', NODE_PUBLISHED)
+            ->fieldCondition($field, 'target_id', $nid, '=')
+            ->execute();
+        if(!empty($query['node'])) {
+            $ret = node_load_multiple(array_keys($query['node']));
+        }
+        return $ret;
+    }
+
+
+    /**
+     * Retrieve the meeting which have abbreviation (field_meeting_abbreviation_value) set to a
+     * specified abbreviation and the specified instrument
+     * @param $abbreviation string abbreviation to filter by
+     * @param $instrument string instrument to filter by
+     * @return meeting node
+     */
+    public static function get_meeting_by_abbreviation($abbreviation,$instrument){
+        $meeting = NULL;
+        $instrument_obj = CMSLegalInstrument::get_by_name($instrument);
+
+        if ($instrument_obj !== NULL) {
+            $instrument_nid = $instrument_obj->nid;
+
+            $query = new EntityFieldQuery();
+            $query = $query
+            ->entityCondition('entity_type', 'node')
+            ->propertyCondition('type', self::$bundle)
+            ->propertyCondition('status', NODE_PUBLISHED)
+            ->fieldCondition('field_meeting_abbreviation', 'value', $abbreviation, '=')
+            ->fieldCondition('field_meeting_instrument', 'target_id', $instrument_nid, '=')
+            ->execute();
+
+            if ($query['node'] !== NULL) {
+                $meeting_result = array_keys($query['node']);
+                if (!empty($meeting_result)) {
+                    $meeting = $meeting_result[0];
+                }
+            }
+        }
+
+        return $meeting;
+    }
+}
