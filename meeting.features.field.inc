@@ -1775,9 +1775,9 @@ function meeting_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'link',
+          'module' => 'cms',
           'settings' => array(),
-          'type' => 'link_default',
+          'type' => 'cms_link_formatter',
           'weight' => '26',
         ),
         'teaser' => array(

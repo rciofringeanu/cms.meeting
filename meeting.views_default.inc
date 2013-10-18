@@ -122,6 +122,7 @@ function meeting_views_default_views() {
   );
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['query']['options']['distinct'] = TRUE;
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['exposed_form']['options']['submit_button'] = 'Search';
@@ -484,6 +485,9 @@ function meeting_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['path'] = 'meeting/listing';
+
+  /* Display: Data export */
+  $handler = $view->new_display('views_data_export', 'Data export', 'meeting_export');
   $translatables['meetings'] = array(
     t('Master'),
     t('Meetings'),
@@ -507,6 +511,7 @@ function meeting_views_default_views() {
     t('Country'),
     t('City'),
     t('Page'),
+    t('Data export'),
   );
   $export['meetings'] = $view;
 

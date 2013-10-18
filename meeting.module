@@ -145,7 +145,6 @@ function meeting_delete_documents($node) {
 
     echo json_encode($data);
     drupal_set_message($data['message']);
-    //drupal_exit();
 }
 
 /**
@@ -181,7 +180,6 @@ function meeting_add_documents($node) {
 
     echo json_encode($data);
     drupal_set_message($data['message']);
-    //drupal_exit();
 }
 
 /**
@@ -264,16 +262,6 @@ function meeting_entity_view($entity, $type, $view_mode, $langcode){
     }
 
     $node = node_load($entity->nid);
-    if (node_is_page($node)) {
-        $fields = CMSMeeting::$related_fields;
-        foreach ($fields as $related_content => $field) {
-            if (!empty($node->{$field}) && isset($node->{$field}[$node->language])) {
-                $content = $entity->content[$field]['#items'];
-                $published_contents = CMSUtils::get_published_content($content);
-                $entity->content[$field]['#items'] = $published_contents;
-            }
-        }
-    }
 
     // Inject the meetings into the country profile page
     switch ($entity->type) {
@@ -507,6 +495,28 @@ function meeting_node_load($nodes, $types) {
                         'access' => TRUE
                     );
                 }
+            case CMSMeeting::$bundle:
+                // Filter out the unpublished nodes from the related content
+                if (arg(0) == 'node' && is_numeric(arg(1)) && arg(1)==$node->nid) {
+                    $fields = CMSMeeting::$related_fields;
+                    foreach ($fields as $related_content => $field) {
+                         if (!empty($node->{$field}) && isset($node->{$field}[$node->language])) {
+                            $content = $node->{$field}[$node->language];
+                            $published_contents = CMSUtils::get_published_nodes($content);
+                            $node->{$field}[$node->language] = $published_contents;
+                         }
+                    }
+                    $fields = CMSMeeting::$false_related_fields;
+                    foreach ($fields as $field_related => $type) {
+                         if (!empty($node->{$field_related}) && isset($node->{$field_related}[$node->language])) {
+                            $content = $node->{$field_related}[$node->language];
+                            $published_contents = CMSUtils::get_published_nodes($content);
+                            $node->{$field_related}[$node->language] = $published_contents;
+                         }
+                    }
+                }
+                break;
+
             default: break;
         }
     }
@@ -525,6 +535,8 @@ class CMSMeeting extends CMSBase {
         'species' => 'field_meeting_species',
         'publication' => 'field_meeting_publication',
         'document' => 'field_meeting_document'
+    );
+    static $false_related_fields = array(
     );
 
 
@@ -561,7 +573,8 @@ class CMSMeeting extends CMSBase {
             'uuid' => CMSUtils::get_node_uuid($node)
         );
         self::get_field_single_value($node, 'field_meeting_abbreviation', $ret);
-        self::get_field_single_value($node, 'field_meeting_description', $ret);
+
+        $ret['field_meeting_description'] = self::get_field_body($node, $out, 'field_meeting_description');
         self::get_field_single_value($node, 'field_meeting_start', $ret);
         self::get_field_single_value($node, 'field_meeting_reg_deadline', $ret);
         self::get_field_single_value($node, 'field_meeting_end', $ret);
@@ -575,12 +588,14 @@ class CMSMeeting extends CMSBase {
         $ret['field_meeting_image'] = self::export_field_files($node, 'field_meeting_image', $export_base_dir);
         self::get_field_single_value($node, 'field_meeting_organizer', $ret);
         self::get_field_single_value($node, 'field_meeting_coorganizer', $ret);
-        $ret['field_meeting_languages'] = self::get_field_taxonomic_term_name($node, 'field_meeting_languages', VOC_LANGUAGES);
+        $ret['field_meeting_languages'] = self::get_field_taxonomic_terms_names($node, 'field_meeting_languages', VOC_LANGUAGES);
         self::get_field_single_value($node, 'field_meeting_end', $ret);
         self::get_field_single_value($node, 'field_meeting_latitude', $ret);
         self::get_field_single_value($node, 'field_meeting_longitude', $ret);
         $ret['field_meeting_document'] = self::get_entity_reference_by_uuid($node, 'field_meeting_document');
+        $ret['field_meeting_url'] = self::get_field_url($node, 'field_meeting_url');
         self::get_field_list_value($node, 'field_meeting_participants', $ret);
+        $ret['field_meeting_threats'] = self::get_field_taxonomic_terms_names($node, "field_meeting_threats", VOC_THREATS);
 
         foreach(self::$related_fields as $field_name) {
             $ret[$field_name] = self::get_entity_reference_by_uuid($node, $field_name);
@@ -613,11 +628,11 @@ class CMSMeeting extends CMSBase {
         }
 
         $node->title = $data['title'];
-        if (!empty($data['status'])) {
+        if (isset($data['status']) && in_array($data['status'],array(0,1))) {
             $node->status = $data['status'];
         }
         self::set_field_single_value($node, 'field_meeting_abbreviation', $data);
-        self::set_field_single_value($node, 'field_meeting_description', $data);
+        self::set_field_body($node, $data, 'field_meeting_description');
         self::set_field_single_value($node, 'field_meeting_start', $data);
         self::set_field_single_value($node, 'field_meeting_reg_deadline', $data);
         self::set_field_single_value($node, 'field_meeting_end', $data);
@@ -630,6 +645,9 @@ class CMSMeeting extends CMSBase {
         self::set_field_country($node, 'field_meeting_country', $data);
         self::set_field_single_value($node, 'field_meeting_organizer', $data);
         self::set_field_single_value($node, 'field_meeting_coorganizer', $data);
+        self::set_field_url($node, 'field_meeting_url', $data);
+        self::set_field_taxonomic_terms($node, "field_meeting_threats", VOC_THREATS, $data);
+
 
         if (array_key_exists('field_meeting_languages', $data)) {
             if (is_array($data['field_meeting_languages'])) {
