@@ -5,10 +5,8 @@ package = CMS
 php = 5.2.4
 version = 7.x-2.0-alpha1
 
-dependencies[] = species
-dependencies[] = legal_instrument
 dependencies[] = country
-dependencies[] = publication
+dependencies[] = legal_instrument
 
 dependencies[] = ctools
 dependencies[] = date
