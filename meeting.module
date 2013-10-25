@@ -3,6 +3,12 @@
  * @file
  * Code for the Meetings feature.
  */
+
+include_once 'meeting.features.inc';
+/**
+ * @file
+ * Code for the Meetings feature.
+ */
 module_load_include('inc', 'meeting', 'meeting.features');
 module_load_include('cron', 'meeting', 'meeting');
 module_load_include('inc', 'meeting', 'meeting.api');
