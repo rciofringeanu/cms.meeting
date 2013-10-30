@@ -79,23 +79,6 @@ function meeting_views_default_views() {
   $handler->display->display_options['defaults']['row_plugin'] = FALSE;
   $handler->display->display_options['row_plugin'] = 'entityreference_fields';
   $handler->display->display_options['defaults']['row_options'] = FALSE;
-  $translatables['cop_meetings'] = array(
-    t('Master'),
-    t('more'),
-    t('Apply'),
-    t('Reset'),
-    t('Sort by'),
-    t('Asc'),
-    t('Desc'),
-    t('Items per page'),
-    t('- All -'),
-    t('Offset'),
-    t('« first'),
-    t('‹ previous'),
-    t('next ›'),
-    t('last »'),
-    t('Entity Reference'),
-  );
   $export['cop_meetings'] = $view;
 
   $view = new view();
@@ -337,39 +320,13 @@ function meeting_views_default_views() {
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
-  $handler->display->display_options['path'] = 'meeting/listing';
+  $handler->display->display_options['path'] = 'manage/meeting/listing';
 
   /* Display: Data export */
   $handler = $view->new_display('views_data_export', 'Data export', 'meeting_export');
-  $translatables['meetings'] = array(
-    t('Master'),
-    t('Meetings'),
-    t('more'),
-    t('Search'),
-    t('Clear filters'),
-    t('Sort by'),
-    t('Asc'),
-    t('Desc'),
-    t('Items per page'),
-    t('- All -'),
-    t('Offset'),
-    t('« first'),
-    t('‹ previous'),
-    t('next ›'),
-    t('last »'),
-    t('term from field_meeting_type'),
-    t('term from field_meeting_status'),
-    t('Content entity referenced from field_meeting_country'),
-    t('Title'),
-    t('Start'),
-    t('CMS Instrument'),
-    t('Type'),
-    t('Status'),
-    t('Country'),
-    t('City'),
-    t('Page'),
-    t('Data export'),
-  );
+  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
+  $handler->display->display_options['path'] = 'meeting/export';
   $export['meetings'] = $view;
 
   return $export;
