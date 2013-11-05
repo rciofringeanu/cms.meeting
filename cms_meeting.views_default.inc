@@ -7,7 +7,7 @@
 /**
  * Implements hook_views_default_views().
  */
-function meeting_views_default_views() {
+function cms_meeting_views_default_views() {
   $export = array();
 
   $view = new view();

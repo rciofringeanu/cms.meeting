@@ -5,7 +5,7 @@
  *
  * Create an associative array with meeting UUIDs and title
 */
-function meeting_list_from_cache($website) {
+function cms_meeting_list_from_cache($website) {
     global $user;
     $response = array();
     $meetings = array();

@@ -7,7 +7,7 @@
 /**
  * Implements hook_taxonomy_default_vocabularies().
  */
-function meeting_taxonomy_default_vocabularies() {
+function cms_meeting_taxonomy_default_vocabularies() {
   return array(
     'languages' => array(
       'name' => 'Languages',

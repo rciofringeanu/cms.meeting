@@ -7,7 +7,7 @@
 /**
  * Implements hook_strongarm().
  */
-function meeting_strongarm() {
+function cms_meeting_strongarm() {
   $export = array();
 
   $strongarm = new stdClass();

@@ -5,7 +5,7 @@ include_once drupal_get_path('module', 'cms') . '/utils.php';
 /**
  * Implements hook_uninstall()
  */
-function meeting_uninstall() {
+function cms_meeting_uninstall() {
     user_role_delete(ROLE_MANAGE_MEETINGS);
 
     CMSUtils::vocabulary_delete(VOC_MEETING_KIND);
@@ -15,7 +15,7 @@ function meeting_uninstall() {
     CMSUtils::remove_menu_and_submenu('main-menu', 'Meetings', '<front>');
 }
 
-function meeting_install () {
+function cms_meeting_install () {
     $role = CMSUtils::get_or_create_role(ROLE_MANAGE_MEETINGS);
 
     CMSUtils::vocabulary_create('Meeting kind', VOC_MEETING_KIND);
@@ -49,7 +49,7 @@ function meeting_install () {
     }
 }
 
-function meeting_update_7007() {
+function cms_meeting_update_7007() {
     $role = CMSUtils::get_or_create_role(ROLE_MANAGE_MEETINGS);
     $rid = $role->rid;
 

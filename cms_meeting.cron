@@ -5,7 +5,7 @@ define('MEETING_CACHE_FILENAME', 'meetings.json');
 /**
  * Implementation of hook_cron_queue_info()
  */
-function meeting_cron_queue_info() {
+function cms_meeting_cron_queue_info() {
     $websites = CMSUtils::get_all_websites();
     $queues = array();
     foreach ($websites as $website_id => $website) {
@@ -21,7 +21,7 @@ function meeting_cron_queue_info() {
 /**
  * Implementation of hook_cron()
  */
-function meeting_cron() {
+function cms_meeting_cron() {
     $websites = CMSUtils::get_all_websites();
 
     // Put everything in a queue for processing.

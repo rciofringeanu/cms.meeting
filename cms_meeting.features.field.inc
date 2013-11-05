@@ -7,7 +7,7 @@
 /**
  * Implements hook_field_default_fields().
  */
-function meeting_field_default_fields() {
+function cms_meeting_field_default_fields() {
   $fields = array();
 
   // Exported field: 'node-meeting-field_meeting_abbreviation'.
