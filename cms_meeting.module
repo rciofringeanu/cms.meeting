@@ -9,9 +9,9 @@ include_once 'cms_meeting.features.inc';
  * @file
  * Code for the Meetings feature.
  */
-module_load_include('inc', 'meeting', 'cms_meeting.features');
-module_load_include('cron', 'meeting', 'cms_meeting');
-module_load_include('inc', 'meeting', 'cms_meeting.api');
+module_load_include('inc', 'cms_meeting', 'cms_meeting.features');
+module_load_include('cron', 'cms_meeting', 'cms_meeting');
+module_load_include('inc', 'cms_meeting', 'cms_meeting.api');
 module_load_include('php', 'cms', 'utils');
 
 define('ROLE_MANAGE_MEETINGS', 'manage meeting');
