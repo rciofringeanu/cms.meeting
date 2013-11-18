@@ -362,7 +362,7 @@ function cms_meeting_form_alter(&$form, &$form_state, $form_id) {
                     $default_value[] = $expert['value'];
                 }
             }
-            $participants_options = CMSContacts::get_contacts();
+            $participants_options = CMSContacts::get_mapped_contacts_names_uid();
             asort($participants_options);
 
             $form['field_meeting_participants'] = array(
