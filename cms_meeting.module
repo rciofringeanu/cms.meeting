@@ -46,12 +46,12 @@ function cms_meeting_menu_local_tasks_alter(&$data, $router_item, $root_path) {
 
 /**
  * Implements hook_menu();
-*/
+ */
 function cms_meeting_menu() {
-    $items['meeting/%node/manage_documents'] = array(
+    $items[ADMINISTRATION_PATH . 'meeting/%node/manage_documents'] = array(
         'title' => 'Manage documents',
-        'page callback' => 'meeting_manage_documents',
-        'page arguments' => array(1),
+        'page callback' => 'cms_meeting_manage_documents',
+        'page arguments' => array(2),
         'access callback' => 'node_access',
         'access arguments' => array('update', 1),
         'weight' => 0,
@@ -59,16 +59,16 @@ function cms_meeting_menu() {
         'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
     );
 
-    $items['meeting/%node/delete_documents'] = array(
-        'page callback' => 'meeting_delete_documents',
-        'page arguments' => array(1),
+    $items[ADMINISTRATION_PATH . 'meeting/%node/delete_documents'] = array(
+        'page callback' => 'cms_meeting_delete_documents',
+        'page arguments' => array(2),
         'access arguments' => array('access content'),
         'type' => MENU_CALLBACK,
     );
 
-    $items['meeting/%node/add_documents'] = array(
-        'page callback' => 'meeting_add_documents',
-        'page arguments' => array(1),
+    $items[ADMINISTRATION_PATH . 'meeting/%node/add_documents'] = array(
+        'page callback' => 'cms_meeting_add_documents',
+        'page arguments' => array(2),
         'access arguments' => array('access content'),
         'type' => MENU_CALLBACK,
     );
@@ -76,15 +76,15 @@ function cms_meeting_menu() {
     $items['api/meeting/list/%'] = array(
         'title' => 'Meeting API (List meetings)',
         'page callback' => 'api_meeting_list',
-        'page arguments' => array(3),
+        'page arguments' => array(4),
         'access arguments' => array('access content'),
         'file' => 'cms_meeting.api.inc',
         'type' => MENU_CALLBACK,
     );
 
-    $items['meeting/list/%'] = array(
-        'page callback' => 'meeting_list_from_cache',
-        'page arguments' => array(2),
+    $items[ADMINISTRATION_PATH . 'meeting/list/%'] = array(
+        'page callback' => 'cms_meeting_list_from_cache',
+        'page arguments' => array(3),
         'access arguments' => array('access content'),
         'type' => MENU_CALLBACK,
         'file' => 'cms_meeting.api.inc',
@@ -109,29 +109,29 @@ function cms_meeting_theme($existing, $type, $theme, $path) {
             'path' => drupal_get_path('theme', 'cms_theme') . '/templates/forms',
         ),
         'table__meetings_template_country' => $base + array(
-            'variables' => array(
-                'header' => NULL,
-                'rows' => NULL,
-                'attributes' => array(),
-                'caption' => NULL,
-                'colgroups' => array(),
-                'sticky' => TRUE,
-                'empty' => '',
-                'settings' => array()
-            )
-        ),
+                'variables' => array(
+                    'header' => NULL,
+                    'rows' => NULL,
+                    'attributes' => array(),
+                    'caption' => NULL,
+                    'colgroups' => array(),
+                    'sticky' => TRUE,
+                    'empty' => '',
+                    'settings' => array()
+                )
+            ),
         'table__meetings_template_instrument' => $base + array(
-            'variables' => array(
-                'header' => NULL,
-                'rows' => NULL,
-                'attributes' => array(),
-                'caption' => NULL,
-                'colgroups' => array(),
-                'sticky' => TRUE,
-                'empty' => '',
-                'settings' => array()
+                'variables' => array(
+                    'header' => NULL,
+                    'rows' => NULL,
+                    'attributes' => array(),
+                    'caption' => NULL,
+                    'colgroups' => array(),
+                    'sticky' => TRUE,
+                    'empty' => '',
+                    'settings' => array()
+                )
             )
-        )
     );
 }
 
@@ -140,7 +140,7 @@ function cms_meeting_theme($existing, $type, $theme, $path) {
  * Callback function
  *
  * Delete selected documents for a specified meeting
-*/
+ */
 function cms_meeting_delete_documents($node) {
     $data = array('message' => t('No documents selected'));
     if (!isset($_POST['documents'])) {
@@ -181,7 +181,7 @@ function cms_meeting_delete_documents($node) {
  * Callback function
  *
  * Add selected documents for a specified meeting
-*/
+ */
 function cms_meeting_add_documents($node) {
     $data = array('message' => t('No documents selected'));
     if (!isset($_POST['documents'])) {
@@ -214,7 +214,7 @@ function cms_meeting_add_documents($node) {
 
 /**
  * Theme meeting manage documents interface
-*/
+ */
 function cms_meeting_manage_documents($node) {
     global $user;
 
@@ -258,7 +258,7 @@ function cms_meeting_views_default_views_alter(&$views) {
 
 /**
  * Implements hook_node_view();
-*/
+ */
 function cms_meeting_node_view($node, $view_mode, $langcode) {
     if(function_exists('cms_theme_node_access') && $node->type == CMSMeeting::$bundle) {
         cms_theme_node_access($node);
@@ -351,7 +351,7 @@ function _meetings_get_meetings_render($node, $view_mode, $theme, $field, $bundl
 
 /**
  * Implements hook_form_alter();
-*/
+ */
 function cms_meeting_form_alter(&$form, &$form_state, $form_id) {
     switch ($form_id) {
         case 'meeting_node_form' :
@@ -374,7 +374,7 @@ function cms_meeting_form_alter(&$form, &$form_state, $form_id) {
             );
             /**
              * Callback function to manipulate field_species_experts data before DB insert
-            */
+             */
             $form['#submit'][] = 'meeting_alter_participants_submit';
 
             $breadcrumb = array();
@@ -456,7 +456,7 @@ function _meeting_redirect_after_delete(&$form, &$form_state) {
  * Set content relation only if the save function is called within Meeting content type
  *
  * @param   stdClass   $node
-*/
+ */
 function cms_meeting_node_presave($node) {
     if ($node->type == 'meeting') {
         if (property_exists($node, 'nid') && $node->nid && (!property_exists($node, 'content_relation') || $node->content_relation != FALSE)) {
@@ -530,19 +530,19 @@ function cms_meeting_node_load($nodes, $types) {
                 if (arg(0) == 'node' && is_numeric(arg(1)) && arg(1)==$node->nid) {
                     $fields = CMSMeeting::$related_fields;
                     foreach ($fields as $related_content => $field) {
-                         if (!empty($node->{$field}) && isset($node->{$field}[$node->language])) {
+                        if (!empty($node->{$field}) && isset($node->{$field}[$node->language])) {
                             $content = $node->{$field}[$node->language];
                             $published_contents = CMSUtils::get_published_nodes($content);
                             $node->{$field}[$node->language] = $published_contents;
-                         }
+                        }
                     }
                     $fields = CMSMeeting::$false_related_fields;
                     foreach ($fields as $field_related => $type) {
-                         if (!empty($node->{$field_related}) && isset($node->{$field_related}[$node->language])) {
+                        if (!empty($node->{$field_related}) && isset($node->{$field_related}[$node->language])) {
                             $content = $node->{$field_related}[$node->language];
                             $published_contents = CMSUtils::get_published_nodes($content);
                             $node->{$field_related}[$node->language] = $published_contents;
-                         }
+                        }
                     }
                 }
                 break;
@@ -590,7 +590,7 @@ class CMSMeeting extends CMSBase {
      *
      * @param   stdClass   $node
      * @return  array
-    */
+     */
     static function get_documents($node) {
         $nids = CMSBase::get_field_list_target_id($node, 'field_meeting_document');
         return node_load_multiple($nids);
@@ -775,12 +775,12 @@ class CMSMeeting extends CMSBase {
 
             $query = new EntityFieldQuery();
             $query = $query
-            ->entityCondition('entity_type', 'node')
-            ->propertyCondition('type', self::$bundle)
-            ->propertyCondition('status', NODE_PUBLISHED)
-            ->fieldCondition('field_meeting_abbreviation', 'value', $abbreviation, '=')
-            ->fieldCondition('field_meeting_instrument', 'target_id', $instrument_nid, '=')
-            ->execute();
+                ->entityCondition('entity_type', 'node')
+                ->propertyCondition('type', self::$bundle)
+                ->propertyCondition('status', NODE_PUBLISHED)
+                ->fieldCondition('field_meeting_abbreviation', 'value', $abbreviation, '=')
+                ->fieldCondition('field_meeting_instrument', 'target_id', $instrument_nid, '=')
+                ->execute();
 
             if ($query['node'] !== NULL) {
                 $meeting_result = array_keys($query['node']);
