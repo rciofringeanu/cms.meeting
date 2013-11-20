@@ -375,7 +375,7 @@ function cms_meeting_form_alter(&$form, &$form_state, $form_id) {
             /**
              * Callback function to manipulate field_species_experts data before DB insert
              */
-            $form['#submit'][] = 'meeting_alter_participants_submit';
+            $form['#submit'][] = 'cms_meeting_alter_participants_submit';
 
             $breadcrumb = array();
             $breadcrumb[] = l(t('Home'), '<front>');
