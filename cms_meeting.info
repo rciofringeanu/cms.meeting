@@ -77,6 +77,7 @@ features[variable][] = node_options_meeting
 features[variable][] = node_preview_meeting
 features[variable][] = node_submitted_meeting
 features[views_view][] = cop_meetings
+features[views_view][] = meeting_documents_list_reorder
 features[views_view][] = meetings
 features_exclude[dependencies][cms] = cms
 features_exclude[dependencies][entityreference] = entityreference
