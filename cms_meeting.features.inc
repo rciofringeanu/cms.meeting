@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * meeting.features.inc
+ * cms_meeting.features.inc
  */
 
 /**

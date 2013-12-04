@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * meeting.features.field_instance.inc
+ * cms_meeting.features.field_instance.inc
  */
 
 /**
@@ -178,7 +178,9 @@ function cms_meeting_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(),
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
       'type' => 'options_select',
       'weight' => 11,
     ),
@@ -260,7 +262,9 @@ function cms_meeting_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(),
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
       'type' => 'options_select',
       'weight' => 26,
     ),
@@ -401,7 +405,9 @@ function cms_meeting_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(),
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
       'type' => 'options_select',
       'weight' => 6,
     ),
@@ -443,7 +449,9 @@ function cms_meeting_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(),
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
       'type' => 'options_select',
       'weight' => 8,
     ),
@@ -484,7 +492,9 @@ function cms_meeting_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(),
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
       'type' => 'options_select',
       'weight' => 19,
     ),
@@ -710,6 +720,48 @@ function cms_meeting_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-meeting-field_meeting_project'
+  $field_instances['node-meeting-field_meeting_project'] = array(
+    'bundle' => 'meeting',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'entityreference',
+        'settings' => array(
+          'link' => FALSE,
+        ),
+        'type' => 'entityreference_label',
+        'weight' => 32,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_meeting_project',
+    'label' => 'Project',
+    'required' => 0,
+    'settings' => array(
+      'entity_translation_sync' => FALSE,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
+      'type' => 'options_select',
+      'weight' => 31,
+    ),
+  );
+
   // Exported field_instance: 'node-meeting-field_meeting_publication'
   $field_instances['node-meeting-field_meeting_publication'] = array(
     'bundle' => 'meeting',
@@ -744,7 +796,9 @@ function cms_meeting_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(),
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
       'type' => 'options_select',
       'weight' => 24,
     ),
@@ -834,7 +888,9 @@ function cms_meeting_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(),
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
       'type' => 'options_select',
       'weight' => 21,
     ),
@@ -927,7 +983,9 @@ function cms_meeting_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(),
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
       'type' => 'options_select',
       'weight' => 10,
     ),
@@ -965,7 +1023,9 @@ function cms_meeting_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(),
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
       'type' => 'options_select',
       'weight' => 25,
     ),
@@ -1007,7 +1067,9 @@ function cms_meeting_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(),
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
       'type' => 'options_select',
       'weight' => 7,
     ),
@@ -1085,6 +1147,7 @@ function cms_meeting_field_default_field_instances() {
   t('Organizer');
   t('Participants');
   t('Poster');
+  t('Project');
   t('Publications');
   t('Registration Deadline');
   t('Short description such as COP 11');

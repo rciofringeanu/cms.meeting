@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * meeting.strongarm.inc
+ * cms_meeting.strongarm.inc
  */
 
 /**
@@ -91,6 +91,9 @@ function cms_meeting_strongarm() {
       'form' => array(
         'title' => array(
           'weight' => '0',
+        ),
+        'path' => array(
+          'weight' => '30',
         ),
       ),
       'display' => array(),

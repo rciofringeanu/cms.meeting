@@ -451,28 +451,6 @@ function _meeting_redirect_after_delete(&$form, &$form_state) {
 }
 
 /**
- * Implements hook_node_presave/
- *
- * Set content relation only if the save function is called within Meeting content type
- *
- * @param   stdClass   $node
- */
-function cms_meeting_node_presave($node) {
-    if ($node->type == 'meeting') {
-        if (property_exists($node, 'nid') && $node->nid && (!property_exists($node, 'content_relation') || $node->content_relation != FALSE)) {
-            CMSMeeting::update_content_relation($node, CMSMeeting::$related_fields, CMSMeeting::$bundle);
-        }
-    }
-}
-
-function cms_meeting_node_insert($node) {
-    if ($node->type == 'meeting') {
-        CMSMeeting::update_content_relation($node, CMSMeeting::$related_fields, CMSMeeting::$bundle);
-    }
-}
-
-
-/**
  * Implements hook_field_extra_fields()
  *
  * @return mixed Extra fields information
