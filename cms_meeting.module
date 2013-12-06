@@ -355,6 +355,12 @@ function _meetings_get_meetings_render($node, $view_mode, $theme, $field, $bundl
 function cms_meeting_form_alter(&$form, &$form_state, $form_id) {
     switch ($form_id) {
         case 'meeting_node_form' :
+
+            $path = drupal_get_path('theme', 'cms_theme');
+            drupal_add_js("$path/js/jquery.ui.timepicker.js");
+            drupal_add_js("$path/js/edit_meeting.js");
+            drupal_add_css("$path/css/jquery.ui.timepicker.css");
+
             $node =  $form['#node'];
             $default_value = array();
             if (property_exists($node, 'field_meeting_participants') && array_key_exists($node->language, $node->field_meeting_participants)) {

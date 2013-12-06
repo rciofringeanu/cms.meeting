@@ -107,14 +107,7 @@ function cms_meeting_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_meeting_country',
-    'foreign keys' => array(
-      'node' => array(
-        'columns' => array(
-          'target_id' => 'nid',
-        ),
-        'table' => 'node',
-      ),
-    ),
+    'foreign keys' => array(),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
@@ -182,14 +175,7 @@ function cms_meeting_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_meeting_document',
-    'foreign keys' => array(
-      'node' => array(
-        'columns' => array(
-          'target_id' => 'nid',
-        ),
-        'table' => 'node',
-      ),
-    ),
+    'foreign keys' => array(),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
@@ -289,14 +275,7 @@ function cms_meeting_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_meeting_instrument',
-    'foreign keys' => array(
-      'node' => array(
-        'columns' => array(
-          'target_id' => 'nid',
-        ),
-        'table' => 'node',
-      ),
-    ),
+    'foreign keys' => array(),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
@@ -539,14 +518,7 @@ function cms_meeting_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_meeting_project',
-    'foreign keys' => array(
-      'node' => array(
-        'columns' => array(
-          'target_id' => 'nid',
-        ),
-        'table' => 'node',
-      ),
-    ),
+    'foreign keys' => array(),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
@@ -585,14 +557,7 @@ function cms_meeting_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_meeting_publication',
-    'foreign keys' => array(
-      'node' => array(
-        'columns' => array(
-          'target_id' => 'nid',
-        ),
-        'table' => 'node',
-      ),
-    ),
+    'foreign keys' => array(),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
@@ -659,14 +624,7 @@ function cms_meeting_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_meeting_species',
-    'foreign keys' => array(
-      'node' => array(
-        'columns' => array(
-          'target_id' => 'nid',
-        ),
-        'table' => 'node',
-      ),
-    ),
+    'foreign keys' => array(),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
@@ -724,6 +682,36 @@ function cms_meeting_field_default_field_bases() {
     ),
     'translatable' => 0,
     'type' => 'datetime',
+  );
+
+  // Exported field_base: 'field_meeting_start_time'
+  $field_bases['field_meeting_start_time'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_meeting_start_time',
+    'foreign keys' => array(
+      'format' => array(
+        'columns' => array(
+          'format' => 'format',
+        ),
+        'table' => 'filter_format',
+      ),
+    ),
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(
+      'entity_translation_sync' => FALSE,
+      'max_length' => 8,
+    ),
+    'translatable' => 0,
+    'type' => 'text',
   );
 
   // Exported field_base: 'field_meeting_status'
