@@ -266,7 +266,7 @@ function cms_meeting_field_default_field_instances() {
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 26,
+      'weight' => 24,
     ),
   );
 
@@ -316,7 +316,7 @@ function cms_meeting_field_default_field_instances() {
         'year_range' => '1970:+3',
       ),
       'type' => 'date_popup',
-      'weight' => 5,
+      'weight' => 6,
     ),
   );
 
@@ -409,7 +409,7 @@ function cms_meeting_field_default_field_instances() {
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 6,
+      'weight' => 7,
     ),
   );
 
@@ -453,7 +453,7 @@ function cms_meeting_field_default_field_instances() {
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 8,
+      'weight' => 9,
     ),
   );
 
@@ -716,7 +716,7 @@ function cms_meeting_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 27,
+      'weight' => 25,
     ),
   );
 
@@ -758,7 +758,7 @@ function cms_meeting_field_default_field_instances() {
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 31,
+      'weight' => 27,
     ),
   );
 
@@ -800,7 +800,7 @@ function cms_meeting_field_default_field_instances() {
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 24,
+      'weight' => 22,
     ),
   );
 
@@ -850,7 +850,7 @@ function cms_meeting_field_default_field_instances() {
         'year_range' => '-0:+3',
       ),
       'type' => 'date_popup',
-      'weight' => 4,
+      'weight' => 5,
     ),
   );
 
@@ -892,7 +892,7 @@ function cms_meeting_field_default_field_instances() {
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 21,
+      'weight' => 20,
     ),
   );
 
@@ -944,6 +944,47 @@ function cms_meeting_field_default_field_instances() {
       ),
       'type' => 'date_popup',
       'weight' => 3,
+    ),
+  );
+
+  // Exported field_instance: 'node-meeting-field_meeting_start_time'
+  $field_instances['node-meeting-field_meeting_start_time'] = array(
+    'bundle' => 'meeting',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 33,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_meeting_start_time',
+    'label' => 'Start Time',
+    'required' => 0,
+    'settings' => array(
+      'entity_translation_sync' => FALSE,
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 10,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 4,
     ),
   );
 
@@ -1027,7 +1068,7 @@ function cms_meeting_field_default_field_instances() {
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 25,
+      'weight' => 23,
     ),
   );
 
@@ -1071,7 +1112,7 @@ function cms_meeting_field_default_field_instances() {
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 7,
+      'weight' => 8,
     ),
   );
 
@@ -1126,7 +1167,7 @@ function cms_meeting_field_default_field_instances() {
       'module' => 'link',
       'settings' => array(),
       'type' => 'link_field',
-      'weight' => 22,
+      'weight' => 21,
     ),
   );
 
@@ -1152,6 +1193,7 @@ function cms_meeting_field_default_field_instances() {
   t('Registration Deadline');
   t('Short description such as COP 11');
   t('Species');
+  t('Start Time');
   t('Start date');
   t('Status');
   t('Threats');

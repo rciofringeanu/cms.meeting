@@ -355,6 +355,11 @@ function _meetings_get_meetings_render($node, $view_mode, $theme, $field, $bundl
 function cms_meeting_form_alter(&$form, &$form_state, $form_id) {
     switch ($form_id) {
         case 'meeting_node_form' :
+
+            $path = drupal_get_path('theme', 'cms_theme');
+            drupal_add_js("$path/js/jquery.ui.timepicker.js");
+            drupal_add_css("$path/css/jquery.ui.timepicker.css");
+
             $node =  $form['#node'];
             $default_value = array();
             if (property_exists($node, 'field_meeting_participants') && array_key_exists($node->language, $node->field_meeting_participants)) {
@@ -584,6 +589,7 @@ class CMSMeeting extends CMSBase {
 
         $ret['field_meeting_description'] = self::get_field_body($node, $out, 'field_meeting_description');
         self::get_field_single_value($node, 'field_meeting_start', $ret);
+        self::get_field_single_value($node, 'field_meeting_start_time', $ret);
         self::get_field_single_value($node, 'field_meeting_reg_deadline', $ret);
         self::get_field_single_value($node, 'field_meeting_end', $ret);
         $ret['field_meeting_instrument'] = self::get_field_instrument_name($node, 'field_meeting_instrument');
@@ -642,6 +648,7 @@ class CMSMeeting extends CMSBase {
         self::set_field_single_value($node, 'field_meeting_abbreviation', $data);
         self::set_field_body($node, $data, 'field_meeting_description');
         self::set_field_single_value($node, 'field_meeting_start', $data);
+        self::set_field_single_value($node, 'field_meeting_start_time', $data);
         self::set_field_single_value($node, 'field_meeting_reg_deadline', $data);
         self::set_field_single_value($node, 'field_meeting_end', $data);
         self::set_field_instrument($node, 'field_meeting_instrument', $data);

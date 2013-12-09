@@ -93,7 +93,7 @@ function cms_meeting_strongarm() {
           'weight' => '0',
         ),
         'path' => array(
-          'weight' => '30',
+          'weight' => '26',
         ),
       ),
       'display' => array(),
