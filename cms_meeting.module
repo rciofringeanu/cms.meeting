@@ -590,6 +590,7 @@ class CMSMeeting extends CMSBase {
 
         $ret['field_meeting_description'] = self::get_field_body($node, $out, 'field_meeting_description');
         self::get_field_single_value($node, 'field_meeting_start', $ret);
+        self::get_field_single_value($node, 'field_meeting_start_time', $ret);
         self::get_field_single_value($node, 'field_meeting_reg_deadline', $ret);
         self::get_field_single_value($node, 'field_meeting_end', $ret);
         $ret['field_meeting_instrument'] = self::get_field_instrument_name($node, 'field_meeting_instrument');
@@ -648,6 +649,7 @@ class CMSMeeting extends CMSBase {
         self::set_field_single_value($node, 'field_meeting_abbreviation', $data);
         self::set_field_body($node, $data, 'field_meeting_description');
         self::set_field_single_value($node, 'field_meeting_start', $data);
+        self::set_field_single_value($node, 'field_meeting_start_time', $data);
         self::set_field_single_value($node, 'field_meeting_reg_deadline', $data);
         self::set_field_single_value($node, 'field_meeting_end', $data);
         self::set_field_instrument($node, 'field_meeting_instrument', $data);
