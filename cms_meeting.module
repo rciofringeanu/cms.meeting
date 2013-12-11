@@ -393,21 +393,22 @@ function cms_meeting_form_alter(&$form, &$form_state, $form_id) {
             break;
 
         case 'views_exposed_form':
-            if (arg(0) == 'meeting') {
+            if ($form['#id'] == 'views-exposed-form-meetings-page') {
                 $path = drupal_get_path('theme', 'cms_theme');
                 drupal_add_js("$path/js/form.js");
 
                 $form['#tree'] = TRUE;
-
                 $instruments[''] = t('Any');
                 $instruments = $instruments + CMSLegalInstrument::get_mapped_instruments($title_as_key = FALSE);
-                $instruments_ids = array_keys($instruments);
 
-                if (isset($_GET['field_meeting_instrument_target_id']) && (in_array($_GET['field_meeting_instrument_target_id'], $instruments_ids))) {
-                    $instrument_selected = $_GET['field_meeting_instrument_target_id'];
-                } else {
-                    $instrument_selected = '';
+                $current_profile = CMSUtils::get_current_profile();
+                foreach ($instruments as $id => $name) {
+                    if (strtolower($name) == $current_profile) {
+                        $current_instrument_id = $id;
+                    }
                 }
+                $field = 'field_meeting_instrument_target_id';
+                $instrument_selected = (isset($_GET[$field]) && (in_array($_GET[$field], array_keys($instruments)))) ? $_GET[$field] : (string)$current_instrument_id;
 
                 $form['field_meeting_instrument_target_id'] = array(
                     '#type' => 'select',
@@ -415,6 +416,7 @@ function cms_meeting_form_alter(&$form, &$form_state, $form_id) {
                     '#suffix' => '</div>',
                     '#options' => $instruments,
                     '#default_value' => $instrument_selected,
+                    '#value' => $instrument_selected,
                 );
 
                 $breadcrumb = array();
