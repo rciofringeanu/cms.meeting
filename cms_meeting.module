@@ -19,6 +19,7 @@ define('ROLE_MANAGE_MEETINGS', 'manage meeting');
 define('VOC_MEETING_KIND', 'meeting_kind');
 define('VOC_MEETING_TYPE', 'meeting_type');
 define('VOC_MEETING_STATUS', 'meeting_status');
+define('FILTER_MEETING_INSTRUMENT_FIELD', 'field_meeting_instrument_target_id');
 
 /**
  * Implements hook_menu_local_tasks_alter();
@@ -407,10 +408,11 @@ function cms_meeting_form_alter(&$form, &$form_state, $form_id) {
                         $current_instrument_id = $id;
                     }
                 }
-                $field = 'field_meeting_instrument_target_id';
-                $instrument_selected = (isset($_GET[$field]) && (in_array($_GET[$field], array_keys($instruments)))) ? $_GET[$field] : (string)$current_instrument_id;
+                $instrument_selected = (isset($_GET[FILTER_MEETING_INSTRUMENT_FIELD])
+                    && (in_array($_GET[FILTER_MEETING_INSTRUMENT_FIELD], array_keys($instruments))))
+                    ? $_GET[FILTER_MEETING_INSTRUMENT_FIELD] : (string)$current_instrument_id;
 
-                $form['field_meeting_instrument_target_id'] = array(
+                $form[FILTER_MEETING_INSTRUMENT_FIELD] = array(
                     '#type' => 'select',
                     '#prefix' => '<div id="dropdown-family-replace">',
                     '#suffix' => '</div>',
