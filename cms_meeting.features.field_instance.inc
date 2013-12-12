@@ -25,7 +25,7 @@ function cms_meeting_field_default_field_instances() {
           'render_tr' => TRUE,
         ),
         'type' => 'cms_field_table_row_formatter',
-        'weight' => 13,
+        'weight' => 9,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -70,7 +70,7 @@ function cms_meeting_field_default_field_instances() {
           'render_tr' => TRUE,
         ),
         'type' => 'cms_field_table_row_formatter',
-        'weight' => 8,
+        'weight' => 7,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -115,7 +115,7 @@ function cms_meeting_field_default_field_instances() {
           'render_tr' => TRUE,
         ),
         'type' => 'cms_field_table_row_formatter',
-        'weight' => 16,
+        'weight' => 12,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -158,7 +158,7 @@ function cms_meeting_field_default_field_instances() {
           'link' => FALSE,
         ),
         'type' => 'entityreference_label',
-        'weight' => 23,
+        'weight' => 18,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -242,7 +242,7 @@ function cms_meeting_field_default_field_instances() {
           'link' => 1,
         ),
         'type' => 'entityreference_label',
-        'weight' => 30,
+        'weight' => 23,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -283,7 +283,7 @@ function cms_meeting_field_default_field_instances() {
           'format' => 'cms_date',
         ),
         'type' => 'cms_date_formatter',
-        'weight' => 14,
+        'weight' => 10,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -334,7 +334,7 @@ function cms_meeting_field_default_field_instances() {
           'image_style' => '',
         ),
         'type' => 'image',
-        'weight' => 12,
+        'weight' => 8,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -384,7 +384,7 @@ function cms_meeting_field_default_field_instances() {
         'module' => 'cms',
         'settings' => array(),
         'type' => 'cms_legal_instruments_formatter',
-        'weight' => 2,
+        'weight' => 3,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -428,7 +428,7 @@ function cms_meeting_field_default_field_instances() {
           'render_tr' => TRUE,
         ),
         'type' => 'cms_term_reference_field_table_row_formatter',
-        'weight' => 4,
+        'weight' => 5,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -472,7 +472,7 @@ function cms_meeting_field_default_field_instances() {
           'render_tr' => TRUE,
         ),
         'type' => 'cms_term_reference_field_table_row_formatter',
-        'weight' => 17,
+        'weight' => 13,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -517,7 +517,7 @@ function cms_meeting_field_default_field_instances() {
           'thousand_separator' => ' ',
         ),
         'type' => 'number_decimal',
-        'weight' => 21,
+        'weight' => 16,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -559,7 +559,7 @@ function cms_meeting_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 19,
+        'weight' => 15,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -605,7 +605,7 @@ function cms_meeting_field_default_field_instances() {
           'thousand_separator' => ' ',
         ),
         'type' => 'number_decimal',
-        'weight' => 22,
+        'weight' => 17,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -650,7 +650,7 @@ function cms_meeting_field_default_field_instances() {
           'render_tr' => TRUE,
         ),
         'type' => 'cms_field_table_row_formatter',
-        'weight' => 15,
+        'weight' => 11,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -691,7 +691,7 @@ function cms_meeting_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 31,
+        'weight' => 24,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -734,7 +734,7 @@ function cms_meeting_field_default_field_instances() {
           'link' => FALSE,
         ),
         'type' => 'entityreference_label',
-        'weight' => 32,
+        'weight' => 25,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -776,7 +776,7 @@ function cms_meeting_field_default_field_instances() {
           'link' => 1,
         ),
         'type' => 'entityreference_label',
-        'weight' => 28,
+        'weight' => 21,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -817,7 +817,7 @@ function cms_meeting_field_default_field_instances() {
           'format' => 'month_year_date_type',
         ),
         'type' => 'cms_date_formatter',
-        'weight' => 18,
+        'weight' => 14,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -868,7 +868,7 @@ function cms_meeting_field_default_field_instances() {
           'link' => 1,
         ),
         'type' => 'entityreference_label',
-        'weight' => 25,
+        'weight' => 19,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -955,11 +955,14 @@ function cms_meeting_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 33,
+        'label' => 'inline',
+        'module' => 'cms',
+        'settings' => array(
+          'render_link' => 0,
+          'render_tr' => TRUE,
+        ),
+        'type' => 'cms_field_table_row_formatter',
+        'weight' => 2,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -1044,7 +1047,7 @@ function cms_meeting_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(),
         'type' => 'taxonomy_term_reference_plain',
-        'weight' => 29,
+        'weight' => 22,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -1087,7 +1090,7 @@ function cms_meeting_field_default_field_instances() {
           'render_tr' => TRUE,
         ),
         'type' => 'cms_term_reference_field_table_row_formatter',
-        'weight' => 3,
+        'weight' => 4,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -1128,7 +1131,7 @@ function cms_meeting_field_default_field_instances() {
         'module' => 'cms',
         'settings' => array(),
         'type' => 'cms_link_formatter',
-        'weight' => 26,
+        'weight' => 20,
       ),
       'teaser' => array(
         'label' => 'above',
