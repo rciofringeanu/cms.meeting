@@ -550,7 +550,7 @@ function cms_meeting_views_default_views() {
   $handler = $view->new_display('views_data_export', 'Data export', 'meeting_export');
   $handler->display->display_options['pager']['type'] = 'some';
   $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
-  $handler->display->display_options['path'] = 'meeting/export';
+  $handler->display->display_options['path'] = 'manage/meeting/export';
 
   /* Display: Publication meetings */
   $handler = $view->new_display('page', 'Publication meetings', 'publication_meetings');
