@@ -331,13 +331,9 @@ function cms_meeting_views_default_views() {
   $handler->display->display_options['style_options']['columns'] = array(
     'title' => 'title',
     'field_meeting_instrument' => 'field_meeting_instrument',
-    'field_meeting_start' => 'field_meeting_start',
     'field_meeting_type' => 'field_meeting_type',
-    'field_meeting_status' => 'field_meeting_status',
-    'field_meeting_country' => 'field_meeting_country',
-    'field_meeting_city' => 'field_meeting_city',
   );
-  $handler->display->display_options['style_options']['default'] = 'field_meeting_start';
+  $handler->display->display_options['style_options']['default'] = '-1';
   $handler->display->display_options['style_options']['info'] = array(
     'title' => array(
       'sortable' => 1,
@@ -347,53 +343,25 @@ function cms_meeting_views_default_views() {
       'empty_column' => 0,
     ),
     'field_meeting_instrument' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-    'field_meeting_start' => array(
       'sortable' => 1,
-      'default_sort_order' => 'desc',
+      'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
       'empty_column' => 0,
     ),
     'field_meeting_type' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-    'field_meeting_status' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-    'field_meeting_country' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-    'field_meeting_city' => array(
-      'sortable' => 0,
+      'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
       'empty_column' => 0,
     ),
   );
-  $handler->display->display_options['style_options']['empty_table'] = TRUE;
   $handler->display->display_options['style_options']['elements'] = array(
     'search_box' => 1,
     'table_info' => 1,
     'save_state' => 0,
+    'enable_tabletools' => 1,
   );
   $handler->display->display_options['style_options']['layout'] = array(
     'autowidth' => 1,
@@ -404,10 +372,17 @@ function cms_meeting_views_default_views() {
     'pagination_style' => 'full_numbers',
     'length_change' => 1,
     'display_length' => '10',
-    'processing' => 1,
-    'server_side' => 1,
+    'processing' => 0,
+    'server_side' => 0,
     'items_per_page_options' => '10, 25, 50, All',
   );
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = '<p class="text-warning">No related content</p>';
+  $handler->display->display_options['empty']['area']['format'] = 'full_html';
   /* Relationship: Content: Type (field_meeting_type) */
   $handler->display->display_options['relationships']['field_meeting_type_tid']['id'] = 'field_meeting_type_tid';
   $handler->display->display_options['relationships']['field_meeting_type_tid']['table'] = 'field_data_field_meeting_type';
@@ -467,27 +442,6 @@ function cms_meeting_views_default_views() {
   $handler->display->display_options['fields']['field_meeting_city']['id'] = 'field_meeting_city';
   $handler->display->display_options['fields']['field_meeting_city']['table'] = 'field_data_field_meeting_city';
   $handler->display->display_options['fields']['field_meeting_city']['field'] = 'field_meeting_city';
-  /* Sort criterion: Taxonomy term: Name */
-  $handler->display->display_options['sorts']['name']['id'] = 'name';
-  $handler->display->display_options['sorts']['name']['table'] = 'taxonomy_term_data';
-  $handler->display->display_options['sorts']['name']['field'] = 'name';
-  $handler->display->display_options['sorts']['name']['relationship'] = 'field_meeting_type_tid';
-  $handler->display->display_options['sorts']['name']['exposed'] = TRUE;
-  $handler->display->display_options['sorts']['name']['expose']['label'] = 'Type';
-  /* Sort criterion: Taxonomy term: Name */
-  $handler->display->display_options['sorts']['name_1']['id'] = 'name_1';
-  $handler->display->display_options['sorts']['name_1']['table'] = 'taxonomy_term_data';
-  $handler->display->display_options['sorts']['name_1']['field'] = 'name';
-  $handler->display->display_options['sorts']['name_1']['relationship'] = 'field_meeting_status_tid';
-  $handler->display->display_options['sorts']['name_1']['exposed'] = TRUE;
-  $handler->display->display_options['sorts']['name_1']['expose']['label'] = 'Status';
-  /* Sort criterion: Content: Title */
-  $handler->display->display_options['sorts']['title']['id'] = 'title';
-  $handler->display->display_options['sorts']['title']['table'] = 'node';
-  $handler->display->display_options['sorts']['title']['field'] = 'title';
-  $handler->display->display_options['sorts']['title']['relationship'] = 'field_meeting_country_target_id';
-  $handler->display->display_options['sorts']['title']['exposed'] = TRUE;
-  $handler->display->display_options['sorts']['title']['expose']['label'] = 'Country';
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
@@ -539,18 +493,21 @@ function cms_meeting_views_default_views() {
   /* Display: Meetings listing */
   $handler = $view->new_display('page', 'Meetings listing', 'page');
   $handler->display->display_options['defaults']['pager'] = FALSE;
-  $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = '10';
+  $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['pager']['options']['offset'] = '0';
-  $handler->display->display_options['pager']['options']['id'] = '0';
-  $handler->display->display_options['pager']['options']['quantity'] = '9';
-  $handler->display->display_options['path'] = 'manage/meeting/listing';
+  $handler->display->display_options['defaults']['empty'] = FALSE;
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = '<br />
 
-  /* Display: Data export */
-  $handler = $view->new_display('views_data_export', 'Data export', 'meeting_export');
-  $handler->display->display_options['pager']['type'] = 'some';
-  $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
-  $handler->display->display_options['path'] = 'meeting/export';
+<div class="alert">
+  <strong>No existing entries for current filtering!</strong>
+</div>';
+  $handler->display->display_options['empty']['area']['format'] = 'full_html';
+  $handler->display->display_options['path'] = 'manage/meeting/listing';
 
   /* Display: Publication meetings */
   $handler = $view->new_display('page', 'Publication meetings', 'publication_meetings');
@@ -1121,6 +1078,7 @@ function cms_meeting_views_default_views() {
     t('‹ previous'),
     t('next ›'),
     t('last »'),
+    t('<p class="text-warning">No related content</p>'),
     t('term from field_meeting_type'),
     t('term from field_meeting_status'),
     t('Content entity referenced from field_meeting_country'),
@@ -1132,7 +1090,11 @@ function cms_meeting_views_default_views() {
     t('Country'),
     t('City'),
     t('Meetings listing'),
-    t('Data export'),
+    t('<br />
+
+<div class="alert">
+  <strong>No existing entries for current filtering!</strong>
+</div>'),
     t('Publication meetings'),
     t('Content entity referenced from field_meeting_publication'),
     t('All'),
