@@ -99,6 +99,425 @@ function cms_meeting_views_default_views() {
   $export['cop_meetings'] = $view;
 
   $view = new view();
+  $view->name = 'front_end_meetings';
+  $view->description = '';
+  $view->tag = 'default';
+  $view->base_table = 'node';
+  $view->human_name = 'Front-end Meetings';
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['title'] = 'Workshops';
+  $handler->display->display_options['use_more_always'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '0';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = '9';
+  $handler->display->display_options['style_plugin'] = 'datatables';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'title' => 'title',
+    'field_meeting_start' => 'field_meeting_start',
+    'field_meeting_status' => 'field_meeting_status',
+    'field_meeting_country' => 'field_meeting_country',
+    'field_meeting_instrument' => 'field_meeting_instrument',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'title' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_meeting_start' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_meeting_status' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_meeting_country' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_meeting_instrument' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  $handler->display->display_options['style_options']['elements'] = array(
+    'search_box' => 1,
+    'table_info' => 1,
+    'save_state' => 0,
+    'enable_tabletools' => 0,
+  );
+  $handler->display->display_options['style_options']['layout'] = array(
+    'autowidth' => 0,
+    'themeroller' => 0,
+    'sdom' => '',
+  );
+  $handler->display->display_options['style_options']['pages'] = array(
+    'pagination_style' => '0',
+    'length_change' => 1,
+    'display_length' => '10',
+    'processing' => 0,
+    'server_side' => 0,
+    'items_per_page_options' => '10, 25, 50, All',
+  );
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  /* Field: Content: Start date */
+  $handler->display->display_options['fields']['field_meeting_start']['id'] = 'field_meeting_start';
+  $handler->display->display_options['fields']['field_meeting_start']['table'] = 'field_data_field_meeting_start';
+  $handler->display->display_options['fields']['field_meeting_start']['field'] = 'field_meeting_start';
+  $handler->display->display_options['fields']['field_meeting_start']['settings'] = array(
+    'format_type' => 'long',
+    'fromto' => 'both',
+    'multiple_number' => '',
+    'multiple_from' => '',
+    'multiple_to' => '',
+  );
+  /* Field: Content: Status */
+  $handler->display->display_options['fields']['field_meeting_status']['id'] = 'field_meeting_status';
+  $handler->display->display_options['fields']['field_meeting_status']['table'] = 'field_data_field_meeting_status';
+  $handler->display->display_options['fields']['field_meeting_status']['field'] = 'field_meeting_status';
+  $handler->display->display_options['fields']['field_meeting_status']['type'] = 'taxonomy_term_reference_plain';
+  /* Field: Content: Country */
+  $handler->display->display_options['fields']['field_meeting_country']['id'] = 'field_meeting_country';
+  $handler->display->display_options['fields']['field_meeting_country']['table'] = 'field_data_field_meeting_country';
+  $handler->display->display_options['fields']['field_meeting_country']['field'] = 'field_meeting_country';
+  $handler->display->display_options['fields']['field_meeting_country']['settings'] = array(
+    'link' => 0,
+  );
+  /* Field: Content: Instrument */
+  $handler->display->display_options['fields']['field_meeting_instrument']['id'] = 'field_meeting_instrument';
+  $handler->display->display_options['fields']['field_meeting_instrument']['table'] = 'field_data_field_meeting_instrument';
+  $handler->display->display_options['fields']['field_meeting_instrument']['field'] = 'field_meeting_instrument';
+  $handler->display->display_options['fields']['field_meeting_instrument']['label'] = 'CMS Instrument';
+  $handler->display->display_options['fields']['field_meeting_instrument']['settings'] = array(
+    'link' => 0,
+  );
+  /* Sort criterion: Content: Post date */
+  $handler->display->display_options['sorts']['created']['id'] = 'created';
+  $handler->display->display_options['sorts']['created']['table'] = 'node';
+  $handler->display->display_options['sorts']['created']['field'] = 'created';
+  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'meeting' => 'meeting',
+  );
+  /* Filter criterion: Content: Type (field_meeting_type) */
+  $handler->display->display_options['filters']['field_meeting_type_tid']['id'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['table'] = 'field_data_field_meeting_type';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['field'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['value'] = array(
+    0 => '653',
+  );
+  $handler->display->display_options['filters']['field_meeting_type_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_type_tid']['expose']['operator_id'] = 'field_meeting_type_tid_op';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['expose']['label'] = 'Type (field_meeting_type)';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['expose']['operator'] = 'field_meeting_type_tid_op';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['expose']['identifier'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['reduce_duplicates'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_type_tid']['vocabulary'] = 'meeting_type';
+  /* Filter criterion: Content: Status (field_meeting_status) */
+  $handler->display->display_options['filters']['field_meeting_status_tid']['id'] = 'field_meeting_status_tid';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['table'] = 'field_data_field_meeting_status';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['field'] = 'field_meeting_status_tid';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_status_tid']['expose']['operator_id'] = 'field_meeting_status_tid_op';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['expose']['label'] = 'Status (field_meeting_status)';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['expose']['operator'] = 'field_meeting_status_tid_op';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['expose']['identifier'] = 'field_meeting_status_tid';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
+    12 => 0,
+    11 => 0,
+  );
+  $handler->display->display_options['filters']['field_meeting_status_tid']['reduce_duplicates'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_status_tid']['type'] = 'select';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['vocabulary'] = 'meeting_status';
+
+  /* Display: Meetings of Parties */
+  $handler = $view->new_display('page', 'Meetings of Parties', 'meetings_of_parties');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Meetings of Parties';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'meeting' => 'meeting',
+  );
+  /* Filter criterion: Content: Type (field_meeting_type) */
+  $handler->display->display_options['filters']['field_meeting_type_tid']['id'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['table'] = 'field_data_field_meeting_type';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['field'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['value'] = array(
+    208 => '208',
+    211 => '211',
+  );
+  $handler->display->display_options['filters']['field_meeting_type_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_type_tid']['expose']['operator_id'] = 'field_meeting_type_tid_op';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['expose']['label'] = 'Type';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['expose']['operator'] = 'field_meeting_type_tid_op';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['expose']['identifier'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
+    12 => 0,
+    11 => 0,
+  );
+  $handler->display->display_options['filters']['field_meeting_type_tid']['expose']['reduce'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_type_tid']['reduce_duplicates'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_type_tid']['type'] = 'select';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['vocabulary'] = 'meeting_type';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['error_message'] = FALSE;
+  /* Filter criterion: Content: Status (field_meeting_status) */
+  $handler->display->display_options['filters']['field_meeting_status_tid']['id'] = 'field_meeting_status_tid';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['table'] = 'field_data_field_meeting_status';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['field'] = 'field_meeting_status_tid';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_status_tid']['expose']['operator_id'] = 'field_meeting_status_tid_op';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['expose']['operator'] = 'field_meeting_status_tid_op';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['expose']['identifier'] = 'field_meeting_status_tid';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
+    12 => 0,
+    11 => 0,
+  );
+  $handler->display->display_options['filters']['field_meeting_status_tid']['reduce_duplicates'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_status_tid']['type'] = 'select';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['vocabulary'] = 'meeting_status';
+  $handler->display->display_options['path'] = 'meetings/meetings-of-parties';
+
+  /* Display: Standing Committee */
+  $handler = $view->new_display('page', 'Standing Committee', 'standing_committee');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Standing Committee';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'meeting' => 'meeting',
+  );
+  /* Filter criterion: Content: Type (field_meeting_type) */
+  $handler->display->display_options['filters']['field_meeting_type_tid']['id'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['table'] = 'field_data_field_meeting_type';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['field'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['value'] = array(
+    0 => '653',
+  );
+  $handler->display->display_options['filters']['field_meeting_type_tid']['reduce_duplicates'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_type_tid']['vocabulary'] = 'meeting_type';
+  $handler->display->display_options['path'] = 'meetings/standing-committee';
+
+  /* Display: Advisory Committee */
+  $handler = $view->new_display('page', 'Advisory Committee', 'advisory_committee');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Advisory Committee';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'meeting' => 'meeting',
+  );
+  /* Filter criterion: Content: Type (field_meeting_type) */
+  $handler->display->display_options['filters']['field_meeting_type_tid']['id'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['table'] = 'field_data_field_meeting_type';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['field'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['value'] = array(
+    0 => '650',
+    1 => '653',
+    2 => '655',
+  );
+  $handler->display->display_options['filters']['field_meeting_type_tid']['reduce_duplicates'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_type_tid']['vocabulary'] = 'meeting_type';
+  $handler->display->display_options['path'] = 'meetings/advisory-committee';
+
+  /* Display: Working Group */
+  $handler = $view->new_display('page', 'Working Group', 'working_group');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Working Group';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'meeting' => 'meeting',
+  );
+  /* Filter criterion: Content: Type (field_meeting_type) */
+  $handler->display->display_options['filters']['field_meeting_type_tid']['id'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['table'] = 'field_data_field_meeting_type';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['field'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['value'] = array(
+    0 => '215',
+  );
+  $handler->display->display_options['filters']['field_meeting_type_tid']['reduce_duplicates'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_type_tid']['vocabulary'] = 'meeting_type';
+  $handler->display->display_options['path'] = 'meetings/working-group';
+
+  /* Display: Workshops */
+  $handler = $view->new_display('page', 'Workshops', 'workshops');
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'meeting' => 'meeting',
+  );
+  /* Filter criterion: Content: Type (field_meeting_type) */
+  $handler->display->display_options['filters']['field_meeting_type_tid']['id'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['table'] = 'field_data_field_meeting_type';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['field'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid']['value'] = array(
+    0 => '216',
+  );
+  $handler->display->display_options['filters']['field_meeting_type_tid']['reduce_duplicates'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_type_tid']['vocabulary'] = 'meeting_type';
+  $handler->display->display_options['path'] = 'meetings/workshops';
+  $translatables['front_end_meetings'] = array(
+    t('Master'),
+    t('Workshops'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort by'),
+    t('Asc'),
+    t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('« first'),
+    t('‹ previous'),
+    t('next ›'),
+    t('last »'),
+    t('Start date'),
+    t('Status'),
+    t('Country'),
+    t('CMS Instrument'),
+    t('Type (field_meeting_type)'),
+    t('Status (field_meeting_status)'),
+    t('Meetings of Parties'),
+    t('Type'),
+    t('Standing Committee'),
+    t('Advisory Committee'),
+    t('Working Group'),
+  );
+  $export['front_end_meetings'] = $view;
+
+  $view = new view();
   $view->name = 'meeting_documents_list_reorder';
   $view->description = '';
   $view->tag = 'default';
