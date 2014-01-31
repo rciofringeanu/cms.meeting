@@ -688,6 +688,11 @@ function cms_meeting_views_default_views() {
   $handler->display->display_options['relationships']['field_document_type_tid']['table'] = 'field_data_field_document_type';
   $handler->display->display_options['relationships']['field_document_type_tid']['field'] = 'field_document_type_tid';
   $handler->display->display_options['relationships']['field_document_type_tid']['required'] = TRUE;
+  /* Field: Content: Number */
+  $handler->display->display_options['fields']['field_document_number']['id'] = 'field_document_number';
+  $handler->display->display_options['fields']['field_document_number']['table'] = 'field_data_field_document_number';
+  $handler->display->display_options['fields']['field_document_number']['field'] = 'field_document_number';
+  $handler->display->display_options['fields']['field_document_number']['type'] = 'text_plain';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -756,6 +761,11 @@ function cms_meeting_views_default_views() {
   /* Display: Reorder */
   $handler = $view->new_display('page', 'Reorder', 'm_d_reorder');
   $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Number */
+  $handler->display->display_options['fields']['field_document_number']['id'] = 'field_document_number';
+  $handler->display->display_options['fields']['field_document_number']['table'] = 'field_data_field_document_number';
+  $handler->display->display_options['fields']['field_document_number']['field'] = 'field_document_number';
+  $handler->display->display_options['fields']['field_document_number']['type'] = 'text_plain';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -808,6 +818,7 @@ function cms_meeting_views_default_views() {
     t('last »'),
     t('Content referencing Content from field_meeting_document'),
     t('term from field_document_type'),
+    t('Number'),
     t('Title'),
     t('Nid'),
     t('Publish date'),
