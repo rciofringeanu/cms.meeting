@@ -304,6 +304,18 @@ function cms_meeting_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'meeting' => 'meeting',
   );
+  $handler->display->display_options['filters']['type']['group'] = 1;
+  /* Filter criterion: Content: Type (field_meeting_type) */
+  $handler->display->display_options['filters']['field_meeting_type_tid_1']['id'] = 'field_meeting_type_tid_1';
+  $handler->display->display_options['filters']['field_meeting_type_tid_1']['table'] = 'field_data_field_meeting_type';
+  $handler->display->display_options['filters']['field_meeting_type_tid_1']['field'] = 'field_meeting_type_tid';
+  $handler->display->display_options['filters']['field_meeting_type_tid_1']['value'] = array(
+    0 => '208',
+    1 => '211',
+  );
+  $handler->display->display_options['filters']['field_meeting_type_tid_1']['group'] = 1;
+  $handler->display->display_options['filters']['field_meeting_type_tid_1']['reduce_duplicates'] = TRUE;
+  $handler->display->display_options['filters']['field_meeting_type_tid_1']['vocabulary'] = 'meeting_type';
   /* Filter criterion: Content: Type (field_meeting_type) */
   $handler->display->display_options['filters']['field_meeting_type_tid']['id'] = 'field_meeting_type_tid';
   $handler->display->display_options['filters']['field_meeting_type_tid']['table'] = 'field_data_field_meeting_type';
@@ -311,6 +323,7 @@ function cms_meeting_views_default_views() {
   $handler->display->display_options['filters']['field_meeting_type_tid']['value'] = array(
     0 => '653',
   );
+  $handler->display->display_options['filters']['field_meeting_type_tid']['group'] = 1;
   $handler->display->display_options['filters']['field_meeting_type_tid']['exposed'] = TRUE;
   $handler->display->display_options['filters']['field_meeting_type_tid']['expose']['operator_id'] = 'field_meeting_type_tid_op';
   $handler->display->display_options['filters']['field_meeting_type_tid']['expose']['label'] = 'Type';
@@ -337,6 +350,7 @@ function cms_meeting_views_default_views() {
   $handler->display->display_options['filters']['field_meeting_status_tid']['id'] = 'field_meeting_status_tid';
   $handler->display->display_options['filters']['field_meeting_status_tid']['table'] = 'field_data_field_meeting_status';
   $handler->display->display_options['filters']['field_meeting_status_tid']['field'] = 'field_meeting_status_tid';
+  $handler->display->display_options['filters']['field_meeting_status_tid']['group'] = 1;
   $handler->display->display_options['filters']['field_meeting_status_tid']['exposed'] = TRUE;
   $handler->display->display_options['filters']['field_meeting_status_tid']['expose']['operator_id'] = 'field_meeting_status_tid_op';
   $handler->display->display_options['filters']['field_meeting_status_tid']['expose']['label'] = 'Status';
@@ -674,6 +688,11 @@ function cms_meeting_views_default_views() {
   $handler->display->display_options['relationships']['field_document_type_tid']['table'] = 'field_data_field_document_type';
   $handler->display->display_options['relationships']['field_document_type_tid']['field'] = 'field_document_type_tid';
   $handler->display->display_options['relationships']['field_document_type_tid']['required'] = TRUE;
+  /* Field: Content: Number */
+  $handler->display->display_options['fields']['field_document_number']['id'] = 'field_document_number';
+  $handler->display->display_options['fields']['field_document_number']['table'] = 'field_data_field_document_number';
+  $handler->display->display_options['fields']['field_document_number']['field'] = 'field_document_number';
+  $handler->display->display_options['fields']['field_document_number']['type'] = 'text_plain';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -742,6 +761,11 @@ function cms_meeting_views_default_views() {
   /* Display: Reorder */
   $handler = $view->new_display('page', 'Reorder', 'm_d_reorder');
   $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Number */
+  $handler->display->display_options['fields']['field_document_number']['id'] = 'field_document_number';
+  $handler->display->display_options['fields']['field_document_number']['table'] = 'field_data_field_document_number';
+  $handler->display->display_options['fields']['field_document_number']['field'] = 'field_document_number';
+  $handler->display->display_options['fields']['field_document_number']['type'] = 'text_plain';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -794,6 +818,7 @@ function cms_meeting_views_default_views() {
     t('last »'),
     t('Content referencing Content from field_meeting_document'),
     t('term from field_document_type'),
+    t('Number'),
     t('Title'),
     t('Nid'),
     t('Publish date'),
