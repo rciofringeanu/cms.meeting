@@ -280,6 +280,26 @@ function cms_meeting_node_view($node, $view_mode, $langcode) {
             $breadcrumb[] = l(t('Home'), '<front>');
             $breadcrumb[] = l(t('Meetings'), ADMINISTRATION_PATH . 'meeting/listing');
             drupal_set_breadcrumb($breadcrumb);
+
+            if ($GLOBALS['theme'] == 'cms_frontend') {
+                if (isset($node->field_meeting_city[$node->language][0])) {
+                    $city = $node->field_meeting_city[$node->language][0]['value'];
+                }
+                if (isset($node->field_meeting_latitude[$node->language][0]) && $node->field_meeting_longitude[$node->language][0]) {
+                    $lat = $node->field_meeting_latitude[$node->language][0]['value'];
+                    $lng = $node->field_meeting_longitude[$node->language][0]['value'];
+                }
+                $point['city'] = (isset($city)) ? $city : null;
+                $point['lat'] = (isset($city)) ? $lat : null;
+                $point['lng'] = (isset($city)) ? $lng : null;
+                $point['country'] = $node->field_meeting_country[$node->language][0]['value'];
+
+                drupal_add_js(array('gmap' => array('marker' => $point )), 'setting');
+                //Map
+                drupal_add_js('https://maps.googleapis.com/maps/api/js?&sensor=true');
+                $path = drupal_get_path('theme', 'cms_frontend');
+                drupal_add_js("$path/js/gmaps.js");
+            }
         }
     }
 }
@@ -292,17 +312,18 @@ function cms_meeting_entity_view($entity, $type, $view_mode, $langcode){
         return;
     }
 
-    $node = node_load($entity->nid);
+    //$node = node_load($entity->nid);
 
     // Inject the meetings into the country profile page
-    switch ($entity->type) {
+    //@TODO to remove this if no problems detected
+    /*switch ($entity->type) {
         case CMSMeeting::$bundle_country_module:
             $node->content[CMSMeeting::$field_meetings_country] = _meetings_get_meetings_render($node, $view_mode, 'table__meetings_template_country', CMSMeeting::$field_meetings_country, CMSMeeting::$bundle_country_module, 'country');
             break;
         case CMSMeeting::$bundle_instrument_module:
             $node->content[CMSMeeting::$field_meetings_instrument] = _meetings_get_meetings_render($node, $view_mode, 'table__meetings_template_instrument', CMSMeeting::$field_meetings_instrument, CMSMeeting::$bundle_instrument_module,'CMS Instrument');
             break;
-    }
+    }*/
 }
 
 
