@@ -354,6 +354,7 @@ function cms_meeting_field_default_field_instances() {
       'entity_translation_sync' => FALSE,
       'file_directory' => 'meetings',
       'file_extensions' => 'bmp tiff jpg jpeg gif png raw svg psd cdr ai dwg',
+      'image_field_caption' => 0,
       'max_filesize' => '50 MB',
       'max_resolution' => '',
       'min_resolution' => '',
