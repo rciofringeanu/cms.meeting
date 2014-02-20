@@ -128,7 +128,7 @@ function cms_meeting_strongarm() {
   $strongarm->name = 'node_options_meeting';
   $strongarm->value = array(
     0 => 'status',
-    1 => 'promote',
+    0 => 'promote',
   );
   $export['node_options_meeting'] = $strongarm;
 
